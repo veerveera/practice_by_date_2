@@ -75,12 +75,12 @@ int main() {
 
     VideoCapture cap("C:/Users/veras/Desktop/ZUA.mp4");
     if (!cap.isOpened()) {
-        std::cerr << "error" << std::endl;
+        cout << "File Error" << endl;
         return -1;
     }
 
-    int frameWidth = static_cast<int>(cap.get(CAP_PROP_FRAME_WIDTH));
-    int frameHeight = static_cast<int>(cap.get(CAP_PROP_FRAME_HEIGHT));
+    int frame_width = static_cast<int>(cap.get(CAP_PROP_FRAME_WIDTH));
+    int frame_height = static_cast<int>(cap.get(CAP_PROP_FRAME_HEIGHT));
     double fps = cap.get(CAP_PROP_FPS);
 
     vector<Mat> processedFrames;
@@ -95,23 +95,23 @@ int main() {
             break;
         }
 
-        Mat resizedFrame;
-        resize(frame, resizedFrame, Size(), 0.75, 0.75, INTER_LANCZOS4);
+        Mat resized_frame;
+        resize(frame, resized_frame, Size(), 0.75, 0.75, INTER_LANCZOS4);
 
         vector<Rect> faces;
-        detectFaces(resizedFrame, face_cascade_face, faces);
+        detectFaces(resized_frame, face_cascade_face, faces);
 
 #pragma omp parallel sections
         {
 #pragma omp section
-            detectEyes(resizedFrame, faces, face_cascade_eye);
+            detectEyes(resized_frame, faces, face_cascade_eye);
 
 #pragma omp section
-            detectSmiles(resizedFrame, faces, face_cascade_smile);
+            detectSmiles(resized_frame, faces, face_cascade_smile);
         }
 
-        cv::resize(resizedFrame, resizedFrame, Size(frameWidth, frameHeight));
-        processedFrames.push_back(resizedFrame.clone());
+        cv::resize(resized_frame, resized_frame, Size(frame_width, frame_height));
+        processedFrames.push_back(resized_frame.clone());
     }
 
     auto end = chrono::steady_clock::now();
@@ -120,7 +120,7 @@ int main() {
 
     cap.release();
 
-    VideoWriter video("C:/Users/veras/Desktop/9.04/output.mp4", VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, Size(frameWidth, frameHeight));
+    VideoWriter video("C:/Users/veras/Desktop/9.04/output.mp4", VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, Size(frame_width, frame_height));
     for (const auto& frame : processedFrames) {
         video.write(frame);
         imshow("Rezult", frame);
