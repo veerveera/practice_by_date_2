@@ -116,16 +116,16 @@ int main() {
 
     auto end = chrono::steady_clock::now();
     chrono::duration<double> elapsed_seconds = end - start;
-    cout << "Time: " << elapsed_seconds.count() << std::endl;
+    cout << "Time: " << elapsed_seconds.count() << endl;
 
     cap.release();
 
     VideoWriter video("C:/Users/veras/Desktop/9.04/output.mp4", VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, Size(frameWidth, frameHeight));
     for (const auto& frame : processedFrames) {
         video.write(frame);
-        imshow("UwU", frame);
+        imshow("Rezult", frame);
 
-        if (cv::waitKey(10) == 'q') {
+        if (waitKey(10) == 'q') {
             break;
         }
     }
